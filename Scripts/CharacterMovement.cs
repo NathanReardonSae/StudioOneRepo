@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    public float moveSpeed = 20f;
-    public float jumpForce = 30f;
-    public float slideSpeed = 10f;
-    public float slideDuration = 0.4f;
-    public Transform groundCheck;
-    public Transform wallCheck;
+    public float moveSpeed = 20f; // The speed at which the Player will move.
+    public float jumpForce = 30f; // THe Force at which the player will jump in the air.
+    public float slideSpeed = 10f; // The speed at which the player will slide at.
+    public float slideDuration = 0.4f; // the float determining the duration the player slide for.
+    public Transform groundCheck; // Checking for contact with ground
+    public Transform wallCheck; // Checking for conctact with walls.
     public LayerMask groundMask;
     public LayerMask wallMask;
 
-    private Rigidbody2D rb;
-    private bool isGrounded;
-    private bool isTouchingWall;
-    private bool canDoubleJump;
+    private Rigidbody2D rb; 
+    private bool isGrounded; // A bool to  see if the player is on the ground or not.
+    private bool isTouchingWall; // A bool to see if the player is touching the walls.
+    private bool canDoubleJump; // a bool to see if the player can jump again in the air.
     private bool isSliding;
     private float slideTimer;
 
@@ -25,7 +25,7 @@ public class CharacterMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         // Ensure groundCheck and wallCheck are properly positioned
-        if (groundCheck == null)
+        if (groundCheck == null) // Ground check
         {
             Debug.LogError("GroundCheck not assigned to CharacterMovement script!");
         }

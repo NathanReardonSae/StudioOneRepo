@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    public PlayerHealth playerHealth;
-    public Slider healthSlider;
-    public Text healthText;
+    public PlayerHealth playerHealth; // A public variable that contains the players health.
+    public Slider healthSlider; // A public variable that contains the players health.
+    public Text healthText; // A variable that will contain the text of the health bar.
 
     void Start()
     {

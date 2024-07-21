@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class QuitGame : MonoBehaviour
 {
-    public void Quit()
+    public void Quit() // a  Function that quits the game when triggered.
     {
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

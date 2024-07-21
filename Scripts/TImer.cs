@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class TImer : MonoBehaviour
 {
-    public Text timerText;
-    private float startTime;
-    private bool isTimerRunning;
+    public Text timerText; // The variable that will contain the parameters for the timer.
+    private float startTime; // the float that conatins the timer start.
+    private bool isTimerRunning; // the bool to check if the timer is running or not.
 
     // Start is called before the first frame update
     void Start()

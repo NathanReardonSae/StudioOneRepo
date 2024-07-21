@@ -3,10 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int maxHealth = 100;
-    public int currentHealth;
+    public int maxHealth = 100; // the int variable that contains the max health the player can have.
+    public int currentHealth; // A variable that contains and displays the players current health.
     public HealthBar healthBar;
-    public string gameOverScreen = "GameOver"; // Assign your actual game over scene name in the Inspector
+    public string gameOverScreen = "GameOver"; // Referencing to the Game Over Scene in the game.
 
     void Start()
     {
