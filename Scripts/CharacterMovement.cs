@@ -4,127 +4,77 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    public float moveSpeed = 20f; // The speed at which the Player will move.
-    public float jumpForce = 30f; // THe Force at which the player will jump in the air.
-    public float slideSpeed = 10f; // The speed at which the player will slide at.
-    public float slideDuration = 0.4f; // the float determining the duration the player slide for.
-    public Transform groundCheck; // Checking for contact with ground
-    public Transform wallCheck; // Checking for conctact with walls.
-    public LayerMask groundMask;
-    public LayerMask wallMask;
+    public float moveSpeed = 20f;           // The speed at which the Player will move.
+    public float jumpForce = 30f;           // The force at which the player will jump.
+    public float doubleJumpForce = 25f;     // The force for double jumping.
+    public Transform groundCheck;           // Transform to check for contact with ground.
+    public LayerMask groundMask;            // Layer mask for ground objects.
 
-    private Rigidbody2D rb; 
-    private bool isGrounded; // A bool to  see if the player is on the ground or not.
-    private bool isTouchingWall; // A bool to see if the player is touching the walls.
-    private bool canDoubleJump; // a bool to see if the player can jump again in the air.
-    private bool isSliding;
-    private float slideTimer;
+    private Rigidbody2D rb;
+    private bool isGrounded;                // Flag to check if the player is on the ground.
+    private bool canJump;                   // Flag to check if the player can jump.
+    private bool canDoubleJump;             // Flag to check if the player can perform a double jump.
+    private bool hasDoubleJumped;           // Flag to check if the player has performed a double jump.
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
-        // Ensure groundCheck and wallCheck are properly positioned
-        if (groundCheck == null) // Ground check
-        {
-            Debug.LogError("GroundCheck not assigned to CharacterMovement script!");
-        }
-        if (wallCheck == null)
-        {
-            Debug.LogError("WallCheck not assigned to CharacterMovement script!");
-        }
+        canJump = true;
+        canDoubleJump = true;
+        hasDoubleJumped = false;
     }
 
     void Update()
     {
-        // Ground check
+        // Check if grounded
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundMask);
-        Debug.Log(" is Grounded: " + isGrounded);
 
-        // Wall check
-        float checkRadius = 0.5f;
-        isTouchingWall = Physics2D.OverlapCircle(wallCheck.position, checkRadius, wallMask);
-        Debug.Log("Is Touching Wall: " + isTouchingWall);
-
-        // Horizontal movement
+        // Handle movement
         float moveInput = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
-        // Jumping
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // Handle jumping
+        if (isGrounded)
         {
-            Jump(jumpForce);
+            // Reset jump states when grounded
+            canJump = true;
             canDoubleJump = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.Space) && !isGrounded && canDoubleJump && !isTouchingWall)
-        {
-            Jump(jumpForce);
-            canDoubleJump = false;
-        }
-        else if (Input.GetKeyDown(KeyCode.Space) && isTouchingWall)
-        {
-            WallJump();
+            hasDoubleJumped = false;
         }
 
-        // Sliding
-        if (Input.GetKeyDown(KeyCode.DownArrow) && !isSliding)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            StartSlide();
-        }
-
-        if (isSliding)
-        {
-            slideTimer -= Time.deltaTime;
-            if (slideTimer <= 0f)
+            if (canJump)
             {
-                StopSlide();
+                Jump(jumpForce);
+                canJump = false;
+            }
+            else if (canDoubleJump && !hasDoubleJumped)
+            {
+                Jump(doubleJumpForce);
+                canDoubleJump = false;
+                hasDoubleJumped = true;
             }
         }
     }
 
-    void Jump(float jumpForce)
+    void Jump(float force)
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        rb.velocity = new Vector2(rb.velocity.x, force);
     }
 
-    void WallJump()
+    void OnDrawGizmosSelected()
     {
-        float wallJumpDirection = isTouchingWall ? 1f : -1f; // Jump away from the wall
-        rb.velocity = new Vector2(wallJumpDirection * moveSpeed, jumpForce);
-    }
+        if (groundCheck == null) return;
 
-    void StartSlide()
-    {
-        isSliding = true;
-        slideTimer = slideDuration;
-
-        // Adjust character scale and speed for slide
-        transform.localScale = new Vector3(transform.localScale.x, 0.5f, transform.localScale.z);
-        moveSpeed = slideSpeed;
-    }
-
-    void StopSlide()
-    {
-        isSliding = false;
-        transform.localScale = new Vector3(transform.localScale.x, 1f, transform.localScale.z);
-        moveSpeed = 5f; // Reset move speed after slide
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-            canDoubleJump = false; // Reset double jump
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
-        }
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(groundCheck.position, 0.1f);
     }
 }
+
+
+
+
+
+
 

@@ -3,10 +3,15 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int maxHealth = 100; // the int variable that contains the max health the player can have.
-    public int currentHealth; // A variable that contains and displays the players current health.
+    public int maxHealth = 100;
+    public int currentHealth;
     public HealthBar healthBar;
-    public string gameOverScreen = "GameOver"; // Referencing to the Game Over Scene in the game.
+    public string gameOverScreen = "gameOverScreen"; // Calls the game over screen when the player died.
+    public float deathYPosition = -10f; // Death Parameters
+    public AudioSource hurtSound; // Add this line for the hurt sound effect
+
+    // Public field for the blood splatter prefab
+    public GameObject bloodSplatterPrefab;
 
     void Start()
     {
@@ -16,6 +21,15 @@ public class PlayerHealth : MonoBehaviour
         {
             healthBar.SetMaxHealth(maxHealth);
             healthBar.SetHealth(currentHealth);
+        }
+    }
+
+    void Update()
+    {
+        // Check if player falls below deathYPosition
+        if (transform.position.y < deathYPosition)
+        {
+            Die();
         }
     }
 
@@ -34,19 +48,31 @@ public class PlayerHealth : MonoBehaviour
             healthBar.SetHealth(currentHealth);
         }
 
+        if (hurtSound != null) // Play the hurt sound if assigned
+        {
+            hurtSound.Play();
+        }
+
+        // Instantiate blood splatter effect
+        if (bloodSplatterPrefab != null)
+        {
+            Instantiate(bloodSplatterPrefab, transform.position, Quaternion.identity);
+        }
+
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
-    void Die()
+    public void Die() // Make sure Die() is public so it can be accessed from other scripts
     {
         Debug.Log("Player Died");
 
         // Load the game over scene
-        SceneManager.LoadScene(gameOverScreen);
+        SceneManager.LoadScene(3);
     }
 }
+
 
 
